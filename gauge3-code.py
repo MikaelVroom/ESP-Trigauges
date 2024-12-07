@@ -380,6 +380,10 @@ print(f"My IP address: {wifi.radio.ipv4_address}")
 e = espnow.ESPNow()
 packets = []
 
+mpgavg_last = 0
+ign_last = 0
+buff_cnt = 0
+
 print("starting listen")
 
 while True:
@@ -399,7 +403,7 @@ while True:
         print("Int: " + str(packet_int))
         mpgavg = round((packet_int / 10.1) + 15, 1)
         mpginst = (packet_int / 2.5)
-        ign = round((packet_int / 2.51) - 10, 1)
+        ign = int((packet_int / 2.51) - 10)
         flex = packet_int
         k1 = round((packet_int / 25) - 4, 1)
         k2 = round((packet_int / 25.1) - 4, 1)
@@ -409,8 +413,12 @@ while True:
         k6 = round((packet_int / 25.5) - 4, 1)
         knock_levels = [k1,k2,k3,k4,k5,k6]
         max_knock = max(knock_levels)
-        value_h.text = str(mpgavg)
-        value_j.text = str(ign)
+        if mpgavg != mpgavg_last:
+            value_h.text = str(mpgavg)
+            mpgavg_last = mpgavg
+        if ign != ign_last:
+            value_j.text = str(ign)
+            ign_last = ign
         value_k.text = str(flex)
         gauge_i_bkgd.height = int((mpginst/40) * 480)
         gauge_i_bkgd.y = int(480 - gauge_i_bkgd.height)
@@ -420,6 +428,7 @@ while True:
             knock_block.color_index = 0
         if max_knock > value_k1_min:
             knock_block.color_index = 1
+            
 print("packets:", f"length={len(packets)}")
 for packet in packets:
     print(packet)
