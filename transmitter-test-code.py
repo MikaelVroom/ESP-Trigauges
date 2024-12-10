@@ -36,6 +36,11 @@ while True:
                 if isinstance(msg, Message):
                     if hex(msg.id) == "0x3e8":
                         print("CAN1: Recieved", msg.data, "from", hex(msg.id))
+                        can_message_str = msg.data
+                        value_1 = round(((can_message_str[0] * 256) + can_message_str[1])/100,2)
+                        value_2 = (can_message_str[2] * 256) + can_message_str[3]
+                        print("Battery voltage: ", value_1)
+                        print("Math block 3: ", value_2)
                 if isinstance(msg, RemoteTransmissionRequest):
                     print("CAN1: RTR request length", msg.length, "from", hex(msg.id))
     time.sleep(0.1)
@@ -52,7 +57,7 @@ while True:
 #        e.send(x)
 #        print("sending: " + x)
 #        time.sleep(0.1)
-#    time.sleep(0.5)    
+#    time.sleep(0.5)
 
 print("finished sending")
 # For the ESP32-CAN-X2 the LED is on IO2
