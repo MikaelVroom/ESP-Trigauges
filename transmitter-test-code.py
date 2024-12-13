@@ -23,6 +23,12 @@ e = espnow.ESPNow()
 peer = espnow.Peer(mac=b'\x74\x4D\xBD\x9D\x4D\x14')
 e.peers.append(peer)
 
+can_messages = [None] * 8
+
+def process_can_message(can_message):
+    frame_num = can_message[0] - 1
+    can_messages[frame_num] = can_message[1:]
+
 while True:
     print("CAN1: Tx Errors:", can1.transmit_error_count,
     "Rx Errors:", can1.receive_error_count,
@@ -37,27 +43,20 @@ while True:
                     if hex(msg.id) == "0x3e8":
                         print("CAN1: Recieved", msg.data, "from", hex(msg.id))
                         can_message_str = msg.data
-                        value_1 = round(((can_message_str[0] * 256) + can_message_str[1])/100,2)
-                        value_2 = (can_message_str[2] * 256) + can_message_str[3]
-                        print("Battery voltage: ", value_1)
-                        print("Math block 3: ", value_2)
+                        for can_msg in can_message_str:
+                            process_can_message(can_msg)
+                
                 if isinstance(msg, RemoteTransmissionRequest):
                     print("CAN1: RTR request length", msg.length, "from", hex(msg.id))
-    time.sleep(0.1)
+    print(can_messages)
+    time.sleep(0.5)
 #    for i in range(101):
 #        x = str(i)
 #        e.send(x)
 #        print("sending: " + x)
 #        time.sleep(0.1)
 #    time.sleep(0.5)
-#    print("Time to count down")
 
-#    for i in range(100):
-#        x = str(100 - i)
-#        e.send(x)
-#        print("sending: " + x)
-#        time.sleep(0.1)
-#    time.sleep(0.5)
 
 print("finished sending")
 # For the ESP32-CAN-X2 the LED is on IO2
