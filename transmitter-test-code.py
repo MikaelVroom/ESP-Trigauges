@@ -100,7 +100,7 @@ while True:
                 last_send_time = time.monotonic()
         except ValueError as error:
             print(error)
-    time.sleep(0.5)
+    time.sleep(0.01)
 
 
 #while True:
