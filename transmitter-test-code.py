@@ -45,19 +45,15 @@ def collect_frames(timeout=TIMEOUT):
     start_time = time.monotonic()
     while not all(received) and (time.monotonic() - start_time < timeout):
         with can_bus.listen(timeout=5.0) as can1_listener:
-#        message_count = can1_listener.in_waiting()
             if can1_listener.in_waiting():
                 message = can1_listener.receive()
                 if hex(message.id) == "0x3e8":
                     data = list(message.data)
-#                    print(f"First byte: {data[0]}")
                     frame_number = data[0]  # Extract frame number
-#                    print(f"Frame number: {frame_number}")
             # Validate frame number and store the data
                     if 0 <= frame_number < FRAME_COUNT:
                         frames[frame_number] = data[1:]  # Store bytes 1-7
                         received[frame_number] = True
-#                        print(f"Received frame {frame_number}: {data}")
     
     if not all(received):
         print("Timeout: Not all frames received!")
@@ -104,7 +100,7 @@ while True:
                 last_send_time = time.monotonic()
         except ValueError as error:
             print(error)
-    time.sleep(1)
+    time.sleep(0.5)
 
 
 #while True:
