@@ -23,8 +23,10 @@ led.direction = digitalio.Direction.OUTPUT
 can_bus = CAN1(rx=board.IO6, tx=board.IO7, baudrate=500_000, auto_restart=True)
 
 e = espnow.ESPNow()
-peer = espnow.Peer(mac=b'\x74\x4D\xBD\x9D\x4D\x14')
-e.peers.append(peer)
+peer1 = espnow.Peer(mac=b'\x74\x4D\xBD\x9D\x4D\x14')
+peer2 = espnow.Peer(mac=b'\x24\x58\x7c\xcf\xbf\x9c')
+e.peers.append(peer1)
+e.peers.append(peer2)
 
 # Constants
 FRAME_COUNT = 8  # Total frames expected
@@ -54,7 +56,7 @@ def collect_frames(timeout=TIMEOUT):
                     if 0 <= frame_number < FRAME_COUNT:
                         frames[frame_number] = data[1:]  # Store bytes 1-7
                         received[frame_number] = True
-    
+
     if not all(received):
         print("Timeout: Not all frames received!")
         return False
@@ -64,7 +66,7 @@ def reconstruct_message():
     """Reconstruct the full message from received frames."""
     if not all(received):
         raise ValueError("Cannot reconstruct message; some frames are missing.")
-    
+
     message = bytearray()
     for frame_data in frames:
         message.extend(frame_data)
@@ -118,7 +120,7 @@ while True:
 #                    if hex(msg.id) == "0x3e8":
 #                        print("CAN1: Recieved", msg.data, "from", hex(msg.id))
 #                        can_message_str = msg.data
-#                
+#
 #                if isinstance(msg, RemoteTransmissionRequest):
 #                    print("CAN1: RTR request length", msg.length, "from", hex(msg.id))
 #    time.sleep(0.001)
