@@ -120,9 +120,9 @@ target_a = vectorio.Rectangle(
     pixel_shader=pointer_pal,
     x = 0,
     y = 225,
-    width = 20,
+    width = 15,
     height = 30,
-    color_index = 1
+    color_index = 5
     )
 
 gauge_a_bkgd_width = 240
