@@ -19,12 +19,14 @@ key = keypad.Keys((board.A0,), value_when_pressed=False, pull=True)
 aio_username = os.getenv('ADAFRUIT_AIO_USERNAME')
 aio_key = os.getenv('ADAFRUIT_AIO_KEY')
 
-pointer_pal = displayio.Palette(5)
-pointer_pal[0] = 0xff0000
-pointer_pal[1] = 0x000000
-pointer_pal[2] = 0x0000ff
-pointer_pal[3] = 0xffffff
-pointer_pal[4] = 0x00ff00
+pointer_pal = displayio.Palette(7)
+pointer_pal[0] = 0xff0000 #red
+pointer_pal[1] = 0x000000 #black
+pointer_pal[2] = 0x0000ff #blue
+pointer_pal[3] = 0xffffff #white
+pointer_pal[4] = 0x00ff00 #green
+pointer_pal[5] = 0xffff00 #yellow
+pointer_pal[6] = 0xffbb00 #orange
 
 context = ssl.create_default_context()
 pool = socketpool.SocketPool(wifi.radio)
@@ -100,7 +102,7 @@ unit_a = label.Label(
     anchored_position = (400, 175)
 )
 
-value_aa = label.Label(
+state_a = label.Label(
     font=font,
     text=text,
     color=0xFFFFFF,
@@ -111,8 +113,17 @@ value_aa = label.Label(
     scale=2,
     base_alignment=True,
     anchor_point = (0.5, 0),
-    anchored_position = (240, 170)
+    anchored_position = (240, 175)
 )
+
+target_a = vectorio.Rectangle(
+    pixel_shader=pointer_pal,
+    x = 0,
+    y = 225,
+    width = 20,
+    height = 30,
+    color_index = 1
+    )
 
 gauge_a_bkgd_width = 240
 
@@ -244,10 +255,11 @@ unit_c.text = str("degF")
 gauge_1.append(channel_a)
 gauge_1.append(unit_a)
 gauge_1.append(value_a)
-gauge_1.append(value_aa)
+gauge_1.append(state_a)
 gauge_1.append(gauge_a_frame)
 gauge_1.append(lower_divider)
 gauge_1.append(gauge_a_bkgd)
+gauge_1.append(target_a)
 gauge_1.append(channel_b)
 gauge_1.append(unit_b)
 gauge_1.append(value_b)
@@ -914,9 +926,45 @@ while True:
         print(f"8: {contents[8]} 9: {contents[9]} 10: {contents[10]} 11: {contents[11]}")
         print(f"Batt V: {batt_v}")
 
-        map_kpa = int(((contents[0] * 256) + contents[1])/25)
+        map_kpa = int(((contents[0] * 256) + contents[1])/100)
         map_tar = int(((contents[2] * 256) + contents[3])/100)
+        target_a.x = int((map_tar/400) * 480)
+        
         boost_state = contents[4]
+        if boost_state == 0:
+            state_a.text = "OFF"
+            state_a.color = 0xffffff
+        if boost_state == 1:
+            state_a.text = "RPM"
+            state_a.color = 0x0000ff
+        if boost_state == 2:
+            state_a.text = "MAP"
+            state_a.color = 0xffbb00
+        if boost_state == 3:
+            state_a.text = "Open"
+            state_a.color = 0xffbb00
+        if boost_state == 4:
+            state_a.text = "Dome"
+            state_a.color = 0xffbb00
+        if boost_state == 5:
+            state_a.text = "Dead"
+            state_a.color = 0xffbb00
+        if boost_state == 6:
+            state_a.text = "CL-Stg2"
+            state_a.color = 0x00ff00
+        if boost_state == 7:
+            state_a.text = "CL-Stg3"
+            state_a.color = 0x00ff00
+        if boost_state == 8:
+            state_a.text = "Clamp"
+            state_a.color = 0xff0000
+        if boost_state == 9:
+            state_a.text = "MAP Lim"
+            state_a.color = 0xff0000
+        if boost_state == 10:
+            state_a.text = "Stg1"
+            state_a.color = 0x00ff00
+        
         flex_perc = contents[5]
         fan_perc = contents[6]
 
@@ -964,7 +1012,6 @@ while True:
         screen_number = contents[55]
 
         value_a.text = str(map_kpa)
-        value_aa.text = str(map_tar)
         value_b.text = str(ect)
         value_c.text = str(iat)
         gauge_a_bkgd.width = int((map_kpa/400) * 480)
