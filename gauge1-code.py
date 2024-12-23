@@ -147,15 +147,6 @@ gauge_a_bkgd = vectorio.Rectangle(
     color_index = 2
     )
 
-lower_divider = vectorio.Rectangle(
-    pixel_shader=pointer_pal,
-    x = 235,
-    y = 240,
-    width = 10,
-    height = 240,
-    color_index = 3
-    )
-
 channel_b = label.Label(
     font=font,
     text=text,
@@ -164,10 +155,10 @@ channel_b = label.Label(
     padding_right=2,
     padding_top=2,
     padding_bottom=2,
-    scale=2,
+    scale=1,
     base_alignment=True,
     anchor_point = (0.5, 0),
-    anchored_position = (120, 270)
+    anchored_position = (110, 270)
 )
 
 channel_b.text = str("CLT")
@@ -182,10 +173,10 @@ value_b = label.Label(
     padding_right=2,
     padding_top=2,
     padding_bottom=2,
-    scale=4,
+    scale=3,
     base_alignment=True,
     anchor_point = (0.5, 0),
-    anchored_position = (120, 320)
+    anchored_position = (110, 300)
 )
 
 unit_b = label.Label(
@@ -196,13 +187,45 @@ unit_b = label.Label(
     padding_right=2,
     padding_top=2,
     padding_bottom=2,
-    scale=2,
+    scale=1,
     base_alignment=True,
     anchor_point = (0.5, 0),
-    anchored_position = (160, 400)
+    anchored_position = (110, 360)
 )
 
 unit_b.text = str("degF")
+
+channel_bb = label.Label(
+    font=font,
+    text=text,
+    color=0xFFFFFF,
+    padding_left=2,
+    padding_right=2,
+    padding_top=2,
+    padding_bottom=2,
+    scale=1,
+    base_alignment=True,
+    anchor_point = (0.5, 0),
+    anchored_position = (240, 270)
+)
+
+channel_bb.text = str("Flex")
+
+value_bb_max = 100
+value_bb_min = 0
+value_bb = label.Label(
+    font=font,
+    text=text,
+    color=0xFFFFFF,
+    padding_left=2,
+    padding_right=2,
+    padding_top=2,
+    padding_bottom=2,
+    scale=3,
+    base_alignment=True,
+    anchor_point = (0.5, 0),
+    anchored_position = (240, 300)
+)
 
 channel_c = label.Label(
     font=font,
@@ -212,10 +235,10 @@ channel_c = label.Label(
     padding_right=2,
     padding_top=2,
     padding_bottom=2,
-    scale=2,
+    scale=1,
     base_alignment=True,
     anchor_point = (0.5, 0),
-    anchored_position = (360, 270)
+    anchored_position = (370, 270)
 )
 
 channel_c.text = str("IAT")
@@ -230,10 +253,10 @@ value_c = label.Label(
     padding_right=2,
     padding_top=2,
     padding_bottom=2,
-    scale=4,
+    scale=3,
     base_alignment=True,
     anchor_point = (0.5, 0),
-    anchored_position = (360, 320)
+    anchored_position = (370, 300)
 )
 
 unit_c = label.Label(
@@ -244,28 +267,63 @@ unit_c = label.Label(
     padding_right=2,
     padding_top=2,
     padding_bottom=2,
-    scale=2,
+    scale=1,
     base_alignment=True,
     anchor_point = (0.5, 0),
-    anchored_position = (320, 400)
+    anchored_position = (370, 360)
 )
 
 unit_c.text = str("degF")
+
+channel_cc = label.Label(
+    font=font,
+    text=text,
+    color=0xFFFFFF,
+    padding_left=2,
+    padding_right=2,
+    padding_top=2,
+    padding_bottom=2,
+    scale=1,
+    base_alignment=True,
+    anchor_point = (0.5, 0),
+    anchored_position = (240, 380)
+)
+
+channel_cc.text = str("Fan")
+
+value_cc_max = 100
+value_cc_min = 0
+value_cc = label.Label(
+    font=font,
+    text=text,
+    color=0xFFFFFF,
+    padding_left=2,
+    padding_right=2,
+    padding_top=2,
+    padding_bottom=2,
+    scale=3,
+    base_alignment=True,
+    anchor_point = (0.5, 0),
+    anchored_position = (240, 410)
+)
 
 gauge_1.append(channel_a)
 gauge_1.append(unit_a)
 gauge_1.append(value_a)
 gauge_1.append(state_a)
 gauge_1.append(gauge_a_frame)
-gauge_1.append(lower_divider)
 gauge_1.append(gauge_a_bkgd)
 gauge_1.append(target_a)
 gauge_1.append(channel_b)
 gauge_1.append(unit_b)
 gauge_1.append(value_b)
+gauge_1.append(channel_bb)
+gauge_1.append(value_bb)
 gauge_1.append(channel_c)
 gauge_1.append(unit_c)
 gauge_1.append(value_c)
+gauge_1.append(channel_cc)
+gauge_1.append(value_cc)
 
 channel_d = label.Label(
     font=font,
@@ -901,8 +959,15 @@ vss_rf = 0
 vss_lr = 0
 vss_rr = 0
 vss_driven = 0
+tc_status = 0
+
 batt_v = 0
 fault_count = 0
+
+launch_rpm = 0
+launch_status = 0
+cruise_status = 0
+cruise_speed = 0
 
 
 print("starting listen")
@@ -929,7 +994,7 @@ while True:
         map_kpa = int(((contents[0] * 256) + contents[1])/100)
         map_tar = int(((contents[2] * 256) + contents[3])/100)
         target_a.x = int((map_tar/400) * 480)
-        
+
         boost_state = contents[4]
         if boost_state == 0:
             state_a.text = "OFF"
@@ -964,7 +1029,7 @@ while True:
         if boost_state == 10:
             state_a.text = "Stg1"
             state_a.color = 0x00ff00
-        
+
         flex_perc = contents[5]
         fan_perc = contents[6]
 
@@ -1002,6 +1067,7 @@ while True:
         vvt_b1_exh = round((contents[45])/3,1)
         vvt_b2_int = round((contents[46])/3,1)
         vvt_b2_ext = round((contents[47])/3,1)
+        tc_status = (contents[48])
 
         vss_lf = (contents[49])
         vss_rf = (contents[50])
@@ -1011,9 +1077,15 @@ while True:
 
         screen_number = contents[55]
 
+        launch_rpm = round(((contents[56] * 256) + contents[57])/100,1)
+        launch_status = contents[58]
+        cruise_status = contents[59]
+        cruise_speed = contents[60]
+        
         value_a.text = str(map_kpa)
         value_b.text = str(ect)
         value_c.text = str(iat)
+        value_cc.text = str(f"{fan_perc}%")
         gauge_a_bkgd.width = int((map_kpa/400) * 480)
         if map_kpa <= value_a_min:
             value_a.color=0x0000ff
@@ -1089,6 +1161,7 @@ while True:
             value_j.text = str(ign_adv)
             ign_adv_last = ign_adv
         value_k.text = str(flex_perc)
+        value_bb.text = str(f"{flex_perc}%")
         gauge_i_bkgd.height = int((mpg_inst/40) * 480)
         gauge_i_bkgd.y = int(480 - gauge_i_bkgd.height)
         value_k1.text = str(max_knock)
