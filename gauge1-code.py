@@ -35,9 +35,9 @@ io = IO_HTTP(aio_username, aio_key, requests)
 
 graphics = Graphics(Displays.ROUND21, default_bg=None, auto_refresh=True)
 
-gauge_1 = displayio.Group()
-gauge_2 = displayio.Group()
-gauge_3 = displayio.Group()
+screen_1 = displayio.Group()
+screen_2 = displayio.Group()
+screen_3 = displayio.Group()
 
 font = bitmap_font.load_font("fonts/LeagueSpartan-Bold-16.bdf", Bitmap)
 
@@ -46,7 +46,7 @@ def center(grid, bitmap):
     grid.x -= graphics.display.width // 2
     grid.y -= graphics.display.height // 2
 
-graphics.display.root_group = gauge_3
+graphics.display.root_group = screen_3
 
 color_bitmap = displayio.Bitmap(480, 480, 1)
 color_palette = displayio.Palette(1)
@@ -158,7 +158,7 @@ channel_b = label.Label(
     scale=1,
     base_alignment=True,
     anchor_point = (0.5, 0),
-    anchored_position = (110, 270)
+    anchored_position = (90, 270)
 )
 
 channel_b.text = str("CLT")
@@ -176,7 +176,7 @@ value_b = label.Label(
     scale=3,
     base_alignment=True,
     anchor_point = (0.5, 0),
-    anchored_position = (110, 300)
+    anchored_position = (90, 300)
 )
 
 unit_b = label.Label(
@@ -190,7 +190,7 @@ unit_b = label.Label(
     scale=1,
     base_alignment=True,
     anchor_point = (0.5, 0),
-    anchored_position = (110, 360)
+    anchored_position = (90, 360)
 )
 
 unit_b.text = str("degF")
@@ -238,7 +238,7 @@ channel_c = label.Label(
     scale=1,
     base_alignment=True,
     anchor_point = (0.5, 0),
-    anchored_position = (370, 270)
+    anchored_position = (390, 270)
 )
 
 channel_c.text = str("IAT")
@@ -256,7 +256,7 @@ value_c = label.Label(
     scale=3,
     base_alignment=True,
     anchor_point = (0.5, 0),
-    anchored_position = (370, 300)
+    anchored_position = (390, 300)
 )
 
 unit_c = label.Label(
@@ -270,7 +270,7 @@ unit_c = label.Label(
     scale=1,
     base_alignment=True,
     anchor_point = (0.5, 0),
-    anchored_position = (370, 360)
+    anchored_position = (390, 360)
 )
 
 unit_c.text = str("degF")
@@ -307,23 +307,23 @@ value_cc = label.Label(
     anchored_position = (240, 410)
 )
 
-gauge_1.append(channel_a)
-gauge_1.append(unit_a)
-gauge_1.append(value_a)
-gauge_1.append(state_a)
-gauge_1.append(gauge_a_frame)
-gauge_1.append(gauge_a_bkgd)
-gauge_1.append(target_a)
-gauge_1.append(channel_b)
-gauge_1.append(unit_b)
-gauge_1.append(value_b)
-gauge_1.append(channel_bb)
-gauge_1.append(value_bb)
-gauge_1.append(channel_c)
-gauge_1.append(unit_c)
-gauge_1.append(value_c)
-gauge_1.append(channel_cc)
-gauge_1.append(value_cc)
+screen_1.append(channel_a)
+screen_1.append(unit_a)
+screen_1.append(value_a)
+screen_1.append(state_a)
+screen_1.append(gauge_a_frame)
+screen_1.append(gauge_a_bkgd)
+screen_1.append(target_a)
+screen_1.append(channel_b)
+screen_1.append(unit_b)
+screen_1.append(value_b)
+screen_1.append(channel_bb)
+screen_1.append(value_bb)
+screen_1.append(channel_c)
+screen_1.append(unit_c)
+screen_1.append(value_c)
+screen_1.append(channel_cc)
+screen_1.append(value_cc)
 
 channel_d = label.Label(
     font=font,
@@ -459,6 +459,14 @@ gauge_e_bkgd = vectorio.Rectangle(
     color_index=2
     )
 
+gauge_ee = vectorio.Rectangle(
+    pixel_shader=pointer_pal,
+    x=215,
+    y=240,
+    width=50,
+    height=10,
+    color_index=1
+    )
 
 lower_divider = vectorio.Rectangle(
     pixel_shader=pointer_pal,
@@ -477,10 +485,10 @@ channel_f = label.Label(
     padding_right=2,
     padding_top=2,
     padding_bottom=2,
-    scale=2,
+    scale=1,
     base_alignment=True,
     anchor_point=(0.5, 0),
-    anchored_position=(120, 270)
+    anchored_position=(30, 260)
 )
 
 channel_f.text = str("FuelP")
@@ -496,10 +504,10 @@ value_f = label.Label(
     padding_right=2,
     padding_top=2,
     padding_bottom=2,
-    scale=4,
+    scale=2,
     base_alignment=True,
     anchor_point=(0.5, 0),
-    anchored_position=(120, 320)
+    anchored_position=(110, 260)
 )
 
 unit_f = label.Label(
@@ -510,10 +518,10 @@ unit_f = label.Label(
     padding_right=2,
     padding_top=2,
     padding_bottom=2,
-    scale=2,
+    scale=1,
     base_alignment=True,
     anchor_point=(0.5, 0),
-    anchored_position=(160, 400)
+    anchored_position=(175, 260)
 )
 
 unit_f.text = str("kPa")
@@ -526,10 +534,10 @@ channel_g = label.Label(
     padding_right=2,
     padding_top=2,
     padding_bottom=2,
-    scale=2,
+    scale=1,
     base_alignment=True,
     anchor_point=(0.5, 0),
-    anchored_position=(360, 270)
+    anchored_position=(40, 310)
 )
 
 channel_g.text = str("OilP")
@@ -545,10 +553,10 @@ value_g = label.Label(
     padding_right=2,
     padding_top=2,
     padding_bottom=2,
-    scale=4,
+    scale=2,
     base_alignment=True,
     anchor_point=(0.5, 0),
-    anchored_position=(360, 320)
+    anchored_position=(110, 310)
 )
 
 unit_g = label.Label(
@@ -559,32 +567,74 @@ unit_g = label.Label(
     padding_right=2,
     padding_top=2,
     padding_bottom=2,
-    scale=2,
+    scale=1,
     base_alignment=True,
     anchor_point=(0.5, 0),
-    anchored_position=(320, 400)
+    anchored_position=(175, 310)
 )
 
 unit_g.text = str("kPa")
 
-gauge_2.append(lower_divider)
-gauge_2.append(channel_d)
-gauge_2.append(unit_d)
-gauge_2.append(value_d)
-gauge_2.append(gauge_d_frame)
-gauge_2.append(gauge_d_bkgd)
-gauge_2.append(channel_e)
-gauge_2.append(unit_e)
-gauge_2.append(value_e)
-gauge_2.append(gauge_e_frame)
-gauge_2.append(gauge_e_bkgd)
-gauge_2.append(channel_f)
-gauge_2.append(unit_f)
-gauge_2.append(value_f)
-gauge_2.append(channel_g)
-gauge_2.append(unit_g)
-gauge_2.append(value_g)
+channel_gg = label.Label(
+    font=font,
+    text=text,
+    color=0xFFFFFF,
+    padding_left=2,
+    padding_right=2,
+    padding_top=2,
+    padding_bottom=2,
+    scale=2,
+    base_alignment=True,
+    anchor_point=(0.5, 0),
+    anchored_position=(360, 260)
+)
 
+channel_gg.text = str("Ign")
+
+value_gg = label.Label(
+    font=font,
+    text=text,
+    color=0xFFFFFF,
+    padding_left=2,
+    padding_right=2,
+    padding_top=2,
+    padding_bottom=2,
+    scale=4,
+    base_alignment=True,
+    anchor_point=(0.5, 0),
+    anchored_position=(360, 330)
+)
+
+knock_block2 = vectorio.Rectangle(
+    pixel_shader=pointer_pal,
+    x=240,
+    y=240,
+    width=240,
+    height=240,
+    color_index=1
+    )
+
+screen_2.append(lower_divider)
+screen_2.append(knock_block2)
+screen_2.append(channel_d)
+screen_2.append(unit_d)
+screen_2.append(value_d)
+screen_2.append(gauge_d_frame)
+screen_2.append(gauge_d_bkgd)
+screen_2.append(channel_e)
+screen_2.append(unit_e)
+screen_2.append(value_e)
+screen_2.append(gauge_e_frame)
+screen_2.append(gauge_e_bkgd)
+screen_2.append(gauge_ee)
+screen_2.append(channel_f)
+screen_2.append(unit_f)
+screen_2.append(value_f)
+screen_2.append(channel_g)
+screen_2.append(unit_g)
+screen_2.append(value_g)
+screen_2.append(channel_gg)
+screen_2.append(value_gg)
 
 channel_h = label.Label(
     font=font,
@@ -643,7 +693,6 @@ gauge_i_frame = vectorio.Rectangle(
     height=480,
     color_index=3
     )
-
 gauge_i_bkgd = vectorio.Rectangle(
     pixel_shader=pointer_pal,
     x=225,
@@ -880,28 +929,28 @@ value_k1 = label.Label(
     anchored_position=(360, 320)
 )
 
-gauge_3.append(knock_block)
-gauge_3.append(lower_divider)
-gauge_3.append(channel_h)
-gauge_3.append(unit_h)
-gauge_3.append(value_h)
-gauge_3.append(gauge_i_frame)
-gauge_3.append(gauge_i_bkgd)
-gauge_3.append(channel_j)
-gauge_3.append(unit_j)
-gauge_3.append(value_j)
-gauge_3.append(channel_k)
-gauge_3.append(unit_k)
-gauge_3.append(value_k)
-gauge_3.append(div_1)
-gauge_3.append(div_2)
-gauge_3.append(div_3)
-gauge_3.append(div_4)
-gauge_3.append(mpg_scale_1)
-gauge_3.append(mpg_scale_2)
-gauge_3.append(mpg_scale_3)
-gauge_3.append(channel_l)
-gauge_3.append(value_k1)
+screen_3.append(knock_block)
+screen_3.append(lower_divider)
+screen_3.append(channel_h)
+screen_3.append(unit_h)
+screen_3.append(value_h)
+screen_3.append(gauge_i_frame)
+screen_3.append(gauge_i_bkgd)
+screen_3.append(channel_j)
+screen_3.append(unit_j)
+screen_3.append(value_j)
+screen_3.append(channel_k)
+screen_3.append(unit_k)
+screen_3.append(value_k)
+screen_3.append(div_1)
+screen_3.append(div_2)
+screen_3.append(div_3)
+screen_3.append(div_4)
+screen_3.append(mpg_scale_1)
+screen_3.append(mpg_scale_2)
+screen_3.append(mpg_scale_3)
+screen_3.append(channel_l)
+screen_3.append(value_k1)
 
 
 # print(f"My MAC address: {[hex(i) for i in wifi.radio.mac_address]}")
@@ -917,6 +966,8 @@ packets = []
 map_kpa = 0
 map_tar = 0
 boost_state = 0
+boost_states = ["Off", "RPM Lock", "MAP Lock", "Open Loop", "Dome", "DB", "Stg2", "Stg3", "Clamp", "Map Lim", "Stg1", ]
+boost_colors = [0xffffff, 0xffbb00, 0xffbb00, 0xffbb00, 0xffbb00, 0xffbb00, 0x00ff00, 0x00ff00, 0xffbb00, 0xffbb00, 0x00ff00]
 flex_perc = 0
 fan_perc = 0
 
@@ -981,11 +1032,11 @@ while True:
         contents = packet.msg
 
         if contents[55] == 1:
-            graphics.display.root_group = gauge_1
+            graphics.display.root_group = screen_1
         if contents[55] == 2:
-            graphics.display.root_group = gauge_2
+            graphics.display.root_group = screen_2
         if contents[55] == 3:
-            graphics.display.root_group = gauge_3
+            graphics.display.root_group = screen_3
 
         batt_v = ((contents[40] * 256 + (contents[41]))/100)
         print(f"8: {contents[8]} 9: {contents[9]} 10: {contents[10]} 11: {contents[11]}")
@@ -996,39 +1047,8 @@ while True:
         target_a.x = int((map_tar/400) * 480)
 
         boost_state = contents[4]
-        if boost_state == 0:
-            state_a.text = "OFF"
-            state_a.color = 0xffffff
-        if boost_state == 1:
-            state_a.text = "RPM"
-            state_a.color = 0x0000ff
-        if boost_state == 2:
-            state_a.text = "MAP"
-            state_a.color = 0xffbb00
-        if boost_state == 3:
-            state_a.text = "Open"
-            state_a.color = 0xffbb00
-        if boost_state == 4:
-            state_a.text = "Dome"
-            state_a.color = 0xffbb00
-        if boost_state == 5:
-            state_a.text = "Dead"
-            state_a.color = 0xffbb00
-        if boost_state == 6:
-            state_a.text = "CL-Stg2"
-            state_a.color = 0x00ff00
-        if boost_state == 7:
-            state_a.text = "CL-Stg3"
-            state_a.color = 0x00ff00
-        if boost_state == 8:
-            state_a.text = "Clamp"
-            state_a.color = 0xff0000
-        if boost_state == 9:
-            state_a.text = "MAP Lim"
-            state_a.color = 0xff0000
-        if boost_state == 10:
-            state_a.text = "Stg1"
-            state_a.color = 0x00ff00
+        state_a.text = boost_states[boost_state]
+        state_a.color = boost_colors[boost_state]
 
         flex_perc = contents[5]
         fan_perc = contents[6]
@@ -1056,7 +1076,7 @@ while True:
         knock_5 = round((contents[32])/10,1)
         knock_6 = round((contents[33])/10,1)
 
-        ign_adv = round(((contents[35] * 256) + contents[36])/100,0)
+        ign_adv = int(((contents[35] * 256) + contents[36])/100)
         tps = round(((contents[37] * 256) + contents[38])/100,1)
         idle_state = contents[39]
         tps = round(((contents[40] * 256) + contents[41])/100,1)
@@ -1113,10 +1133,15 @@ while True:
         value_e.text = str(lambda2)
         value_f.text = str(int(fuel_kpa))
         value_g.text = str(int(oil_kpa))
-        gauge_d_bkgd.height = int((lambda1/2) * 480)
+        lambda1_level = (lambda1 - 0.5) / (1.5-0.5)
+        lambda1_level = max(0, lambda1_level)
+        gauge_d_bkgd.height = int((lambda1_level) * 480)
         gauge_d_bkgd.y = int(480 - gauge_d_bkgd.height)
-        gauge_e_bkgd.height = int((lambda2/2) * 480)
+        lambda2_level = (lambda2 - 0.5) / (1.5-0.5)
+        lambda2_level = max(0, lambda2_level)        
+        gauge_e_bkgd.height = int((lambda2_level) * 480)
         gauge_e_bkgd.y = int(480 - gauge_e_bkgd.height)
+        gauge_ee.y = int(480-((lambda_tar-0.5) * 480))
 
         if lambda1 <= value_d_min:
             value_d.color = 0x0000ff
@@ -1157,9 +1182,8 @@ while True:
 #        if mpg_avg != mpg_avg_last:
         value_h.text = str(mpg_avg)
 #            mpg_avg_last = mpg_avg
-        if ign_adv != ign_adv_last:
-            value_j.text = str(ign_adv)
-            ign_adv_last = ign_adv
+        value_j.text = str(ign_adv)
+        value_gg.text = str(ign_adv)
         value_k.text = str(flex_perc)
         value_bb.text = str(f"{flex_perc}%")
         gauge_i_bkgd.height = int((mpg_inst/40) * 480)
@@ -1168,8 +1192,10 @@ while True:
 
         if max_knock <= value_k1_min:
             knock_block.color_index = 0
+            knock_block2.color_index = 0
         if max_knock > value_k1_min:
             knock_block.color_index = 1
+            knock_block2.color_index = 1
 
 print("packets:", f"length={len(packets)}")
 for packet in packets:
