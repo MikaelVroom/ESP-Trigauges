@@ -1268,7 +1268,7 @@ while True:
 
         screen_number = contents[55]
 
-        launch_rpm = int(((contents[56] * 256) + contents[57])/100)
+        launch_rpm = int(((contents[56] * 256) + contents[57]))
         launch_status = contents[58]
         cruise_status = contents[59]
         cruise_speed = contents[60]
