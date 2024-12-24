@@ -770,10 +770,10 @@ channel_j = label.Label(
     anchored_position=(345, 50)
 )
 
-channel_j.text = str("Ign")
+channel_j.text = str("Spd")
 
 value_j_max = 80
-value_j_min = -20
+value_j_min = 0
 
 value_j = label.Label(
     font=font,
@@ -783,10 +783,10 @@ value_j = label.Label(
     padding_right=2,
     padding_top=2,
     padding_bottom=2,
-    scale=4,
+    scale=3,
     base_alignment=True,
-    anchor_point=(0.5, 0),
-    anchored_position=(370, 125)
+    anchor_point=(0, 0),
+    anchored_position=(290, 100)
 )
 
 unit_j = label.Label(
@@ -800,10 +800,40 @@ unit_j = label.Label(
     scale=1,
     base_alignment=True,
     anchor_point=(0.5, 0),
-    anchored_position=(330, 210)
+    anchored_position=(440, 155)
 )
 
-unit_j.text = str("deg BTDC")
+unit_j.text = str("mph")
+
+state_jj = label.Label(
+    font=font,
+    text=text,
+    color=0xFFFFFF,
+    padding_left=2,
+    padding_right=2,
+    padding_top=2,
+    padding_bottom=2,
+    scale=1,
+    base_alignment=True,
+    anchor_point=(0, 0),
+    anchored_position=(380, 210)
+)
+
+state_jj.text = str("Spd")
+
+value_jj = label.Label(
+    font=font,
+    text=text,
+    color=0xFFFFFF,
+    padding_left=2,
+    padding_right=2,
+    padding_top=2,
+    padding_bottom=2,
+    scale=3,
+    base_alignment=True,
+    anchor_point=(0, 0),
+    anchored_position=(290, 180)
+)
 
 channel_k = label.Label(
     font=font,
@@ -819,10 +849,7 @@ channel_k = label.Label(
     anchored_position=(120, 260)
 )
 
-channel_k.text = str("Flex")
-
-value_k_max = 100
-value_k_min = 0
+channel_k.text = str("Throttle")
 
 value_k = label.Label(
     font=font,
@@ -832,10 +859,10 @@ value_k = label.Label(
     padding_right=2,
     padding_top=2,
     padding_bottom=2,
-    scale=4,
+    scale=3,
     base_alignment=True,
     anchor_point=(0.5, 0),
-    anchored_position=(120, 320)
+    anchored_position=(120, 300)
 )
 
 unit_k = label.Label(
@@ -849,10 +876,54 @@ unit_k = label.Label(
     scale=1,
     base_alignment=True,
     anchor_point=(0.5, 0),
-    anchored_position=(150, 400)
+    anchored_position=(190, 320)
 )
 
-unit_k.text = str("% ethanol")
+unit_k.text = str("TPS")
+
+value_kk = label.Label(
+    font=font,
+    text=text,
+    color=0xFFFFFF,
+    padding_left=2,
+    padding_right=2,
+    padding_top=2,
+    padding_bottom=2,
+    scale=3,
+    base_alignment=True,
+    anchor_point=(0.5, 0),
+    anchored_position=(120, 360)
+)
+
+unit_kk = label.Label(
+    font=font,
+    text=text,
+    color=0xFFFFFF,
+    padding_left=2,
+    padding_right=2,
+    padding_top=2,
+    padding_bottom=2,
+    scale=1,
+    base_alignment=True,
+    anchor_point=(0.5, 0),
+    anchored_position=(190, 380)
+)
+
+unit_kk.text = str("APS")
+
+state_k = label.Label(
+    font=font,
+    text=text,
+    color=0xFFFFFF,
+    padding_left=2,
+    padding_right=2,
+    padding_top=2,
+    padding_bottom=2,
+    scale=1,
+    base_alignment=True,
+    anchor_point=(0.5, 0),
+    anchored_position=(160, 420)
+)
 
 mpg_scale_1 = label.Label(
     font=font,
@@ -938,10 +1009,15 @@ screen_3.append(gauge_i_frame)
 screen_3.append(gauge_i_bkgd)
 screen_3.append(channel_j)
 screen_3.append(unit_j)
+screen_3.append(state_jj)
+screen_3.append(value_jj)
 screen_3.append(value_j)
 screen_3.append(channel_k)
 screen_3.append(unit_k)
 screen_3.append(value_k)
+screen_3.append(unit_kk)
+screen_3.append(value_kk)
+screen_3.append(state_k)
 screen_3.append(div_1)
 screen_3.append(div_2)
 screen_3.append(div_3)
@@ -996,7 +1072,67 @@ knock_6 = 0
 ign_adv = 0
 ign_adv_last = 1
 tps = 0
+aps = 0
 idle_state = 0
+idle_states = [
+    "Startup", 
+    "na", 
+    "na", 
+    "Thr Open", 
+    "RPM lock", 
+    "RPM tar", 
+    "Dash hold", 
+    "Dash Decay", 
+    "Strt Decay", 
+    "Off", 
+    "Spd hold", 
+    "na",
+    "na",
+    "na",
+    "na",
+    "na",
+    "Open Loop",
+    "na",
+    "RPM 0",
+    "na",
+    "na",
+    "na",
+    "na",
+    "na",
+    "Active",
+    "MAP hold",
+    "ISC OR"
+    ]
+
+idle_colors = [
+    0xffbb00, 
+    0xffbb00, 
+    0xffbb00, 
+    0xffffff, 
+    0xffbb00, 
+    0xffbb00, 
+    0xffbb00, 
+    0xffbb00, 
+    0xffbb00, 
+    0xffffff, 
+    0xffbb00, 
+    0xffbb00,
+    0xffbb00,
+    0xffbb00,
+    0xffbb00,
+    0xffbb00,
+    0xffbb00,
+    0xffbb00,
+    0xffffff,
+    0xffbb00,
+    0xffbb00,
+    0xffbb00,
+    0xffbb00,
+    0xffbb00,
+    0x00ff00,
+    0xffbb00,
+    0xffbb00
+    ]
 
 vvt_int_tar = 0
 vvt_exh_tar = 0
@@ -1018,6 +1154,8 @@ fault_count = 0
 launch_rpm = 0
 launch_status = 0
 cruise_status = 0
+cruise_states = ["Off", "Enabled", "Active", "Strt Lck", "Min RPM", "Max RPM", "CAN Er"]
+cruise_colors = [0x000000, 0xffbb00, 0x00ff00, 0xffbb00, 0xffbb00, 0xffbb00, 0xffbb00]
 cruise_speed = 0
 
 
@@ -1038,9 +1176,10 @@ while True:
         if contents[55] == 3:
             graphics.display.root_group = screen_3
 
-        batt_v = ((contents[40] * 256 + (contents[41]))/100)
         print(f"8: {contents[8]} 9: {contents[9]} 10: {contents[10]} 11: {contents[11]}")
         print(f"Batt V: {batt_v}")
+
+################### Decode the ESP-now message into variables
 
         map_kpa = int(((contents[0] * 256) + contents[1])/100)
         map_tar = int(((contents[2] * 256) + contents[3])/100)
@@ -1069,17 +1208,17 @@ while True:
         fuel_pwm = contents[25]
         oil_kpa = round(((contents[26] * 256) + contents[27])/100,0)
 
-        knock_1 = round((contents[28])/10,1)
-        knock_2 = round((contents[29])/10,1)
-        knock_3 = round((contents[30])/10,1)
-        knock_4 = round((contents[31])/10,1)
-        knock_5 = round((contents[32])/10,1)
-        knock_6 = round((contents[33])/10,1)
+        knock_1 = round(((contents[28])/10)-15,1)
+        knock_2 = round(((contents[29])/10)-15,1)
+        knock_3 = round(((contents[30])/10)-15,1)
+        knock_4 = round(((contents[31])/10)-15,1)
+        knock_5 = round(((contents[32])/10)-15,1)
+        knock_6 = round(((contents[33])/10)-15,1)
 
         ign_adv = int(((contents[35] * 256) + contents[36])/100)
-        tps = round(((contents[37] * 256) + contents[38])/100,1)
+        tps = int(((contents[37] * 256) + contents[38])/100)
         idle_state = contents[39]
-        tps = round(((contents[40] * 256) + contents[41])/100,1)
+        aps = int(((contents[40] * 256) + contents[41])/100)
 
         vvt_int_tar = round((contents[42])/3,0)
         vvt_exh_tar = round((contents[43])/3,0)
@@ -1093,7 +1232,7 @@ while True:
         vss_rf = (contents[50])
         vss_lr = (contents[51])
         vss_rr = (contents[52])
-        vss_driven = round(((contents[53] * 256) + contents[54])/100,1)
+        vss_driven = int((((contents[53] * 256) + contents[54])/100)*0.6213)
 
         screen_number = contents[55]
 
@@ -1101,7 +1240,11 @@ while True:
         launch_status = contents[58]
         cruise_status = contents[59]
         cruise_speed = contents[60]
-        
+        batt_v = round((contents[61] * 256 + (contents[62]))/100,1)
+
+################## Start writing values to gauges
+
+######## Screen 1
         value_a.text = str(map_kpa)
         value_b.text = str(ect)
         value_c.text = str(iat)
@@ -1129,6 +1272,8 @@ while True:
         if iat >= value_c_max:
             value_c.color=0xff0000
 
+######## Screen 2
+
         value_d.text = str(lambda1)
         value_e.text = str(lambda2)
         value_f.text = str(int(fuel_kpa))
@@ -1138,7 +1283,7 @@ while True:
         gauge_d_bkgd.height = int((lambda1_level) * 480)
         gauge_d_bkgd.y = int(480 - gauge_d_bkgd.height)
         lambda2_level = (lambda2 - 0.5) / (1.5-0.5)
-        lambda2_level = max(0, lambda2_level)        
+        lambda2_level = max(0, lambda2_level)
         gauge_e_bkgd.height = int((lambda2_level) * 480)
         gauge_e_bkgd.y = int(480 - gauge_e_bkgd.height)
         gauge_ee.y = int(480-((lambda_tar-0.5) * 480))
@@ -1176,20 +1321,36 @@ while True:
             value_g.color = 0xffffff
         if oil_kpa >= value_g_max:
             value_g.color = 0xff0000
-
+        value_gg.text = str(ign_adv)
         knock_levels = [knock_1,knock_2,knock_3,knock_4,knock_5,knock_6]
         max_knock = max(knock_levels)
-#        if mpg_avg != mpg_avg_last:
+        value_k1.text = str(max_knock)
+
         value_h.text = str(mpg_avg)
-#            mpg_avg_last = mpg_avg
-        value_j.text = str(ign_adv)
-        value_gg.text = str(ign_adv)
-        value_k.text = str(flex_perc)
+
+        value_j.text = str(vss_driven)
+        if cruise_status == 0:
+            value_j.anchored_position = (290, 125)
+            value_j.scale = 4
+        if cruise_status > 0:
+            value_j.anchored_position = (290, 100)
+            value_j.scale = 3
+        value_jj.text = str(cruise_speed)
+        value_jj.color = cruise_colors[cruise_status]
+        state_jj.text = cruise_states[cruise_status]
+        state_jj.color = cruise_colors[cruise_status]
+
+        value_k.text = str(tps)
+        value_kk.text = str(aps)
+        state_k.text = idle_states[idle_state]
+        state_k.color = idle_colors[idle_state]
         value_bb.text = str(f"{flex_perc}%")
         gauge_i_bkgd.height = int((mpg_inst/40) * 480)
         gauge_i_bkgd.y = int(480 - gauge_i_bkgd.height)
-        value_k1.text = str(max_knock)
 
+
+        
+        
         if max_knock <= value_k1_min:
             knock_block.color_index = 0
             knock_block2.color_index = 0
