@@ -981,12 +981,9 @@ channel_l = label.Label(
     anchored_position=(360, 260)
 )
 
-channel_l.text = str("Knock")
+channel_l.text = str("Launch")
 
-value_k1_max = 0
-value_k1_min = -2
-
-value_k1 = label.Label(
+value_l = label.Label(
     font=font,
     text=text,
     color=0xFFFFFF,
@@ -994,13 +991,44 @@ value_k1 = label.Label(
     padding_right=2,
     padding_top=2,
     padding_bottom=2,
-    scale=4,
+    scale=3,
     base_alignment=True,
     anchor_point=(0.5, 0),
     anchored_position=(360, 320)
 )
 
-screen_3.append(knock_block)
+state_l = label.Label(
+    font=font,
+    text=text,
+    color=0xFFFFFF,
+    padding_left=2,
+    padding_right=2,
+    padding_top=2,
+    padding_bottom=2,
+    scale=1,
+    base_alignment=True,
+    anchor_point=(0.5, 0),
+    anchored_position=(320, 420)
+)
+
+
+value_k1_max = 0
+value_k1_min = -2
+
+#value_k1 = label.Label(
+#    font=font,
+#    text=text,
+#    color=0xFFFFFF,
+#    padding_left=2,
+#    padding_right=2,
+#    padding_top=2,
+#    padding_bottom=2,
+#    scale=4,
+#    base_alignment=True,
+#    anchor_point=(0.5, 0),
+#    anchored_position=(360, 320)
+#)
+
 screen_3.append(lower_divider)
 screen_3.append(channel_h)
 screen_3.append(unit_h)
@@ -1026,7 +1054,9 @@ screen_3.append(mpg_scale_1)
 screen_3.append(mpg_scale_2)
 screen_3.append(mpg_scale_3)
 screen_3.append(channel_l)
-screen_3.append(value_k1)
+screen_3.append(value_l)
+screen_3.append(state_l)
+#screen_3.append(value_k1)
 
 
 # print(f"My MAC address: {[hex(i) for i in wifi.radio.mac_address]}")
@@ -1153,6 +1183,8 @@ fault_count = 0
 
 launch_rpm = 0
 launch_status = 0
+launch_states = ["Off", "Active", "Inactive"]
+launch_colors = [0xffffff, 0x00ff00, 0xffbb00]
 cruise_status = 0
 cruise_states = ["Off", "Enabled", "Active", "Strt Lck", "Min RPM", "Max RPM", "CAN Er"]
 cruise_colors = [0x000000, 0xffbb00, 0x00ff00, 0xffbb00, 0xffbb00, 0xffbb00, 0xffbb00]
@@ -1236,7 +1268,7 @@ while True:
 
         screen_number = contents[55]
 
-        launch_rpm = round(((contents[56] * 256) + contents[57])/100,1)
+        launch_rpm = int(((contents[56] * 256) + contents[57])/100)
         launch_status = contents[58]
         cruise_status = contents[59]
         cruise_speed = contents[60]
@@ -1324,7 +1356,7 @@ while True:
         value_gg.text = str(ign_adv)
         knock_levels = [knock_1,knock_2,knock_3,knock_4,knock_5,knock_6]
         max_knock = max(knock_levels)
-        value_k1.text = str(max_knock)
+#        value_k1.text = str(max_knock)
 
         value_h.text = str(mpg_avg)
 
@@ -1344,6 +1376,12 @@ while True:
         value_kk.text = str(aps)
         state_k.text = idle_states[idle_state]
         state_k.color = idle_colors[idle_state]
+        
+        value_l.text = str(launch_rpm)
+        value_l.color = launch_colors[launch_status]
+        state_l.text = launch_states[launch_status]
+        state_l.color = launch_colors[launch_status]
+        
         value_bb.text = str(f"{flex_perc}%")
         gauge_i_bkgd.height = int((mpg_inst/40) * 480)
         gauge_i_bkgd.y = int(480 - gauge_i_bkgd.height)
