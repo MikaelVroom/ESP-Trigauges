@@ -977,8 +977,8 @@ channel_l = label.Label(
     padding_bottom=2,
     scale=2,
     base_alignment=True,
-    anchor_point=(0.5, 0),
-    anchored_position=(360, 260)
+    anchor_point=(0, 0),
+    anchored_position=(290, 260)
 )
 
 channel_l.text = str("Launch")
@@ -994,7 +994,7 @@ value_l = label.Label(
     scale=3,
     base_alignment=True,
     anchor_point=(0.5, 0),
-    anchored_position=(360, 320)
+    anchored_position=(360, 300)
 )
 
 state_l = label.Label(
@@ -1007,10 +1007,39 @@ state_l = label.Label(
     padding_bottom=2,
     scale=1,
     base_alignment=True,
-    anchor_point=(0.5, 0),
-    anchored_position=(320, 420)
+    anchor_point=(0, 0),
+    anchored_position=(290, 350)
 )
 
+channel_m = label.Label(
+    font=font,
+    text=text,
+    color=0xFFFFFF,
+    padding_left=2,
+    padding_right=2,
+    padding_top=2,
+    padding_bottom=2,
+    scale=2,
+    base_alignment=True,
+    anchor_point=(0, 0),
+    anchored_position=(275, 380)
+)
+
+channel_m.text = str("TRAC")
+
+state_m = label.Label(
+    font=font,
+    text=text,
+    color=0xFFFFFF,
+    padding_left=2,
+    padding_right=2,
+    padding_top=2,
+    padding_bottom=2,
+    scale=1,
+    base_alignment=True,
+    anchor_point=(0, 0),
+    anchored_position=(275, 420)
+)
 
 value_k1_max = 0
 value_k1_min = -2
@@ -1056,7 +1085,8 @@ screen_3.append(mpg_scale_3)
 screen_3.append(channel_l)
 screen_3.append(value_l)
 screen_3.append(state_l)
-#screen_3.append(value_k1)
+screen_3.append(channel_m)
+screen_3.append(state_m)
 
 
 # print(f"My MAC address: {[hex(i) for i in wifi.radio.mac_address]}")
@@ -1105,17 +1135,17 @@ tps = 0
 aps = 0
 idle_state = 0
 idle_states = [
-    "Startup", 
-    "na", 
-    "na", 
-    "Thr Open", 
-    "RPM lock", 
-    "RPM tar", 
-    "Dash hold", 
-    "Dash Decay", 
-    "Strt Decay", 
-    "Off", 
-    "Spd hold", 
+    "Startup",
+    "na",
+    "na",
+    "Thr Open",
+    "RPM lock",
+    "RPM tar",
+    "Dash hold",
+    "Dash Decay",
+    "Strt Decay",
+    "Off",
+    "Spd hold",
     "na",
     "na",
     "na",
@@ -1135,17 +1165,17 @@ idle_states = [
     ]
 
 idle_colors = [
-    0xffbb00, 
-    0xffbb00, 
-    0xffbb00, 
-    0xffffff, 
-    0xffbb00, 
-    0xffbb00, 
-    0xffbb00, 
-    0xffbb00, 
-    0xffbb00, 
-    0xffffff, 
-    0xffbb00, 
+    0xffbb00,
+    0xffbb00,
+    0xffbb00,
+    0xffffff,
+    0xffbb00,
+    0xffbb00,
+    0xffbb00,
+    0xffbb00,
+    0xffbb00,
+    0xffffff,
+    0xffbb00,
     0xffbb00,
     0xffbb00,
     0xffbb00,
@@ -1177,6 +1207,8 @@ vss_lr = 0
 vss_rr = 0
 vss_driven = 0
 tc_status = 0
+tc_states = ["Off", "RPM Lock", "TPS Lock", "Spd Lock", "Ready", "Active", "Disabled", "Off"]
+tc_colors = [0x000000, 0xffbb00, 0xffbb00, 0xffbb00, 0x00ff00, 0x0000ff, 0x000000, 0x000000]
 
 batt_v = 0
 fault_count = 0
@@ -1184,12 +1216,14 @@ fault_count = 0
 launch_rpm = 0
 launch_status = 0
 launch_states = ["Off", "Active", "Inactive"]
-launch_colors = [0xffffff, 0x00ff00, 0xffbb00]
+launch_colors = [0x000000, 0x00ff00, 0xffbb00]
 cruise_status = 0
 cruise_states = ["Off", "Enabled", "Active", "Strt Lck", "Min RPM", "Max RPM", "CAN Er"]
 cruise_colors = [0x000000, 0xffbb00, 0x00ff00, 0xffbb00, 0xffbb00, 0xffbb00, 0xffbb00]
 cruise_speed = 0
 
+screen_number = 0
+screen_number_last = 0
 
 print("starting listen")
 
@@ -1201,12 +1235,14 @@ while True:
         print(packet.msg)
         contents = packet.msg
 
-        if contents[55] == 1:
-            graphics.display.root_group = screen_1
-        if contents[55] == 2:
-            graphics.display.root_group = screen_2
-        if contents[55] == 3:
-            graphics.display.root_group = screen_3
+        if screen_number != screen_number_last:
+            if screen_number == 1:
+                graphics.display.root_group = screen_1
+            if screen_number == 2:
+                graphics.display.root_group = screen_2
+            if screen_number == 3:
+                graphics.display.root_group = screen_3
+            screen_number_last = screen_number
 
         print(f"8: {contents[8]} 9: {contents[9]} 10: {contents[10]} 11: {contents[11]}")
         print(f"Batt V: {batt_v}")
@@ -1376,19 +1412,21 @@ while True:
         value_kk.text = str(aps)
         state_k.text = idle_states[idle_state]
         state_k.color = idle_colors[idle_state]
-        
+
+        channel_l.color = launch_colors[launch_status]
         value_l.text = str(launch_rpm)
         value_l.color = launch_colors[launch_status]
         state_l.text = launch_states[launch_status]
         state_l.color = launch_colors[launch_status]
-        
+
+        channel_m.color = tc_colors[tc_status]
+        state_m.text = tc_states[tc_status]
+        state_m.color = tc_colors[tc_status]
+
         value_bb.text = str(f"{flex_perc}%")
         gauge_i_bkgd.height = int((mpg_inst/40) * 480)
         gauge_i_bkgd.y = int(480 - gauge_i_bkgd.height)
 
-
-        
-        
         if max_knock <= value_k1_min:
             knock_block.color_index = 0
             knock_block2.color_index = 0
