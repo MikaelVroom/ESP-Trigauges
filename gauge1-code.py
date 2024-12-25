@@ -4,8 +4,10 @@ import wifi
 import socketpool
 import adafruit_requests
 import board
+import time
 import displayio
 import vectorio
+import countio
 from displayio import Bitmap
 from adafruit_io.adafruit_io import IO_HTTP
 import keypad
@@ -14,10 +16,10 @@ from adafruit_bitmap_font import bitmap_font
 from adafruit_qualia.graphics import Graphics, Displays
 import espnow
 
-key = keypad.Keys((board.A0,), value_when_pressed=False, pull=True)
-
 aio_username = os.getenv('ADAFRUIT_AIO_USERNAME')
 aio_key = os.getenv('ADAFRUIT_AIO_KEY')
+
+key = keypad.Keys((board.A0,), value_when_pressed=False, pull=True)
 
 pointer_pal = displayio.Palette(7)
 pointer_pal[0] = 0xff0000 #red
@@ -38,6 +40,8 @@ graphics = Graphics(Displays.ROUND21, default_bg=None, auto_refresh=True)
 screen_1 = displayio.Group()
 screen_2 = displayio.Group()
 screen_3 = displayio.Group()
+
+gaugeid = 1
 
 font = bitmap_font.load_font("fonts/LeagueSpartan-Bold-16.bdf", Bitmap)
 
@@ -1212,6 +1216,7 @@ tc_colors = [0x000000, 0xffbb00, 0xffbb00, 0xffbb00, 0x00ff00, 0x0000ff, 0x00000
 
 batt_v = 0
 fault_count = 0
+button_counter = 0
 
 launch_rpm = 0
 launch_status = 0
@@ -1222,30 +1227,54 @@ cruise_states = ["Off", "Enabled", "Active", "Strt Lck", "Min RPM", "Max RPM", "
 cruise_colors = [0x000000, 0xffbb00, 0x00ff00, 0xffbb00, 0xffbb00, 0xffbb00, 0xffbb00]
 cruise_speed = 0
 
-screen_number = 0
+screen_0 = 0
+screen_number = gaugeid
+screen_number_can = 0
 screen_number_last = 0
+screen_array = [screen_0, screen_1, screen_2, screen_3]
+press_time = 0
 
 print("starting listen")
 
 while True:
     if e:
-        print("Reading packet:")
+#        print("Reading packet:")
         packet = e.read()
 #        packets.append(packet)
-        print(packet.msg)
+#        print(packet.msg)
         contents = packet.msg
 
-        if screen_number != screen_number_last:
-            if screen_number == 1:
-                graphics.display.root_group = screen_1
-            if screen_number == 2:
-                graphics.display.root_group = screen_2
-            if screen_number == 3:
-                graphics.display.root_group = screen_3
-            screen_number_last = screen_number
+        event = key.events.get()
 
-        print(f"8: {contents[8]} 9: {contents[9]} 10: {contents[10]} 11: {contents[11]}")
+        if event:
+            if event.pressed:
+                press_time = time.monotonic()
+                button_counter = button_counter + 1
+            
+            if button_counter <= 2:
+                screen_number = 1 + button_counter
+            
+            if button_counter > 2:
+                button_counter = 0
+                screen_number = 1
+            
+        if screen_number > 3:
+            screen_number = 1
+        if screen_number_can != screen_number_last:
+            if screen_number_can == 1:
+                graphics.display.root_group = screen_1
+            if screen_number_can == 2:
+                graphics.display.root_group = screen_2
+            if screen_number_can == 3:
+                graphics.display.root_group = screen_3
+            screen_number_last = screen_number_can
+        
+        print(f"Button count: {button_counter}")
+
+        graphics.display.root_group = screen_array[screen_number]
+
         print(f"Batt V: {batt_v}")
+        print(f"Screen no: {screen_number}, CAN: {screen_number_can} Last: {screen_number_last}")
 
 ################### Decode the ESP-now message into variables
 
@@ -1302,7 +1331,7 @@ while True:
         vss_rr = (contents[52])
         vss_driven = int((((contents[53] * 256) + contents[54])/100)*0.6213)
 
-        screen_number = contents[55]
+        screen_number_can = contents[55]
 
         launch_rpm = int(((contents[56] * 256) + contents[57]))
         launch_status = contents[58]
